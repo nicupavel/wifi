@@ -40,9 +40,9 @@ def find_cell(interface, query):
     return cell
 
 
-def get_scheme_params(interface, scheme, ssid=None):
-    cell = find_cell(interface, ssid or scheme)
-    passkey = None if not cell.encrypted else input('passkey> ')
+def get_scheme_params(interface, scheme, psk):
+    cell = find_cell(interface, scheme)
+    passkey = None if not cell.encrypted else psk #input('passkey> ')
 
     return interface, scheme, cell, passkey
 
@@ -65,7 +65,7 @@ def add_command(args):
     scheme_class = Scheme.for_file(args.file)
     assert not scheme_class.find(args.interface, args.scheme), "That scheme has already been used"
 
-    scheme = scheme_class.for_cell(*get_scheme_params(args.interface, args.scheme, args.ssid))
+    scheme = scheme_class.for_cell(*get_scheme_params(args.interface, args.scheme, args.psk))
     scheme.save()
 
 
@@ -133,6 +133,8 @@ def arg_parser():
     ssid_help = ("The SSID for the network to which you wish to connect."
                  "  This is fuzzy matched, so you don't have to be precise.")
     
+    psk_help = ("The plaintext password for the SSID to which you wish to connect.")
+    
     parser_show = subparsers.add_parser('config',
                                         help="Prints the configuration to connect to a new network.")
     parser_show.add_argument('scheme', help=scheme_help, metavar='SCHEME')
@@ -142,7 +144,8 @@ def arg_parser():
     parser_add = subparsers.add_parser('add',
                                        help="Adds the configuration to connect to a new network.")
     parser_add.add_argument('scheme', help=scheme_help, metavar='SCHEME')
-    parser_add.add_argument('ssid', nargs='?', help=ssid_help, metavar='SSID')
+    #parser_add.add_argument('ssid', nargs='?', help=ssid_help, metavar='SSID')
+    parser_add.add_argument('psk', nargs='?', help=psk_help, metavar='PSK')
     parser_add.set_defaults(func=add_command)
     
     parser_connect = subparsers.add_parser('connect',
