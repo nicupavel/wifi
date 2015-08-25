@@ -55,6 +55,16 @@ def list_command(args):
     for scheme in Scheme.for_file(args.file).all():
         print(scheme.name)
 
+def delete_command(args):
+    scheme_class = Scheme.for_file(args.file)
+    scheme = scheme_class.find(args.interface, args.scheme)
+    assert scheme, "Couldn't find a scheme named {0!r}".format(args.scheme)
+
+    try:
+	scheme.delete()
+    except:
+	assert False, "Failed to delete scheme %s" % scheme.name
+
 
 def show_command(args):
     scheme = Scheme.for_file(args.file).for_cell(*get_scheme_params(args.interface, args.scheme, args.ssid))
@@ -127,7 +137,7 @@ def arg_parser():
     
     parser_list = subparsers.add_parser('list', help="Shows a list of networks already configured.")
     parser_list.set_defaults(func=list_command)
-    
+
     scheme_help = ("A memorable nickname for a wireless network."
                    "  If SSID is not provided, the network will be guessed using SCHEME.")
     ssid_help = ("The SSID for the network to which you wish to connect."
@@ -140,6 +150,10 @@ def arg_parser():
     parser_show.add_argument('scheme', help=scheme_help, metavar='SCHEME')
     parser_show.add_argument('ssid', nargs='?', help=ssid_help, metavar='SSID')
     parser_show.set_defaults(func=show_command)
+
+    parser_delete = subparsers.add_parser('delete', help="Delete a configured scheme.")
+    parser_delete.add_argument('scheme', help=scheme_help, metavar='SCHEME')
+    parser_delete.set_defaults(func=delete_command)
     
     parser_add = subparsers.add_parser('add',
                                        help="Adds the configuration to connect to a new network.")
