@@ -73,11 +73,21 @@ def show_command(args):
 
 def add_command(args):
     scheme_class = Scheme.for_file(args.file)
-    assert not scheme_class.find(args.interface, args.scheme), "That scheme has already been used"
+    assert not scheme_class.find(args.interface, args.scheme), "That scheme already exists"
 
-    scheme = scheme_class.for_cell(*get_scheme_params(args.interface, args.scheme, args.psk))
+    if args.scheme == "default-ap":
+	scheme = Scheme('wlan0', 'ap', type="static", options={
+	    'hostapd': '/etc/hostapd.conf',
+	    'address': '192.168.251.1',
+	    'netmask': '255.255.255.0',
+	    'post-up': 'dhcpd wlan0',
+	    'post-down': '/etc/init.d/hostapd stop',
+	    'post-down': '/etc/init.d/dhcp-server stop'
+	})
+    else:
+	scheme = scheme_class.for_cell(*get_scheme_params(args.interface, args.scheme, args.psk))
+
     scheme.save()
-
 
 def connect_command(args):
     scheme_class = Scheme.for_file(args.file)

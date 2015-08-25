@@ -98,7 +98,7 @@ class Scheme(object):
         return iface + options + '\n'
 
     def __repr__(self):
-        return 'Scheme(interface={interface!r}, name={name!r}, options={options!r}'.format(**vars(self))
+        return 'Scheme(interface={interface!r}, name={name!r}, type={type!r}, options={options!r}'.format(**vars(self))
 
     @classmethod
     def all(cls):
