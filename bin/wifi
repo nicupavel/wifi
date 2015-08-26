@@ -78,11 +78,9 @@ def mode_command(args):
     print("Setting boot mode %s" % args.type)
     content = ""
     with open(args.file, 'r') as f:
-        skip = False
         for line in f:
-            if not line.strip():
-                skip = False
-            elif line.strip().startswith("auto wlan0"):
+            skip = False
+            if line.strip().startswith("auto wlan0"):
         	skip = True
 	    elif line.strip().startswith("auto eth0"):
 		skip = True
