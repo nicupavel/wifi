@@ -24,7 +24,7 @@ except:
 version = '1.0.0'
 
 data_files = [
-    ('/etc/bash_completion.d/', ['extras/wifi-completion.bash']),
+    #('/etc/bash_completion.d/', ['extras/wifi-completion.bash']),
 ]
 for entry in data_files:
     # make sure we actually have write access to the target folder and if not don't
