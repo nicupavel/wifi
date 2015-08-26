@@ -71,6 +71,34 @@ def show_command(args):
     print(scheme)
 
 
+def mode_command(args):
+    if args.type.lower() != "ap" and args.type.lower() != "client":
+	assert False, "Invalid mode type specified, can be only ap or client"
+
+    print("Setting boot mode %s" % args.type)
+    content = ""
+    with open(args.file, 'r') as f:
+        skip = False
+        for line in f:
+            if not line.strip():
+                skip = False
+            elif line.strip().startswith("auto wlan0"):
+        	skip = True
+	    elif line.strip().startswith("auto eth0"):
+		skip = True
+            if not skip:
+                content += line
+
+	if args.type.lower() == "ap":
+	    content += "auto wlan0-ap\n"
+	    content += "auto eth0\n"
+	else:
+	    content += "auto wlan0-client\n"
+
+    with open(args.file, 'w') as f:
+	f.write(content)
+
+
 def add_command(args):
     scheme_class = Scheme.for_file(args.file)
     assert not scheme_class.find(args.interface, args.scheme), "That scheme already exists"
@@ -186,6 +214,9 @@ def arg_parser():
                                 help="Connect to a network without storing it in the config file")
     parser_connect.set_defaults(func=connect_command)
     
+    parser_mode = subparsers.add_parser('mode', help="Set default boot mode ap/client")
+    parser_mode.add_argument("type", help="ap or client")
+    parser_mode.set_defaults(func=mode_command)
     
     # TODO: how to specify the correct interfaces file to work off of.
     parser_connect.get_options = lambda: [scheme.name for scheme in Scheme.all()]
