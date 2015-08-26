@@ -85,7 +85,9 @@ def add_command(args):
 	    'post-down': '/etc/init.d/dhcp-server stop'
 	})
     else:
-	scheme = scheme_class.for_cell(*get_scheme_params(args.interface, args.scheme, args.psk))
+	interface, scheme, cell, passkey = get_scheme_params(args.interface, args.scheme, args.psk)
+	name = "client"
+	scheme = scheme_class.for_cell(interface, name, cell, passkey)
 
     scheme.save()
 
