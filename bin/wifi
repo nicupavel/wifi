@@ -89,9 +89,10 @@ def mode_command(args):
 
 	if args.type.lower() == "ap":
 	    content += "auto eth0\n"
-	    content += "auto wlan0-ap\n"
+	    content += "auto wlan0=wlan0-ap\n"
 	else:
-	    content += "auto wlan0-client\n"
+	    content += "auto wlan0=wlan0-client\n"
+	    content += "auto eth0\n"
 
     with open(args.file, 'w') as f:
 	f.write(content)
