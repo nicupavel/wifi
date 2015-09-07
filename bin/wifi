@@ -88,8 +88,8 @@ def mode_command(args):
                 content += line
 
 	if args.type.lower() == "ap":
-	    content += "auto wlan0-ap\n"
 	    content += "auto eth0\n"
+	    content += "auto wlan0-ap\n"
 	else:
 	    content += "auto wlan0-client\n"
 
