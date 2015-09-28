@@ -118,6 +118,13 @@ def add_command(args):
 
     scheme.save()
 
+
+def add_static_command(args):
+    cell = Cell.from_static(args.ssid, args.enc)
+    scheme_class = Scheme.for_file(args.file)
+    scheme = scheme_class.for_cell(args.interface, "client", cell, args.psk)
+    scheme.save()
+
 def connect_command(args):
     scheme_class = Scheme.for_file(args.file)
     if args.adhoc:
@@ -216,6 +223,13 @@ def arg_parser():
     parser_mode = subparsers.add_parser('mode', help="Set default boot mode ap/client")
     parser_mode.add_argument("type", help="ap or client")
     parser_mode.set_defaults(func=mode_command)
+
+    parser_add_static = subparsers.add_parser('add-static', help="Manually add a ssid, that it's not on scan list")
+    parser_add_static.add_argument('ssid', help=ssid_help, metavar='SSID')
+    parser_add_static.add_argument('enc', nargs='?', help="Encrypytion type: wep, wpa,wpa2", metavar='ENC')
+    parser_add_static.add_argument('psk', nargs='?', help=psk_help, metavar='PSK')
+    parser_add_static.set_defaults(func=add_static_command)
+
     
     # TODO: how to specify the correct interfaces file to work off of.
     parser_connect.get_options = lambda: [scheme.name for scheme in Scheme.all()]

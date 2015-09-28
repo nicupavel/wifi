@@ -44,6 +44,26 @@ class Cell(object):
         return normalize(cell_string)
 
     @classmethod
+    def from_static(cls, ssid, enc):
+        """
+        Creates a cell object from specified parameters
+        """
+	cell = Cell()
+	cell.ssid = ssid
+	
+	if enc == "wpa2":
+	    cell.encryption_type = 'wpa2'
+	    cell.encrypted = True
+        elif enc == "wpa":
+            cell.encryption_type = 'wpa'
+	    cell.encrypted = True
+	else:
+	    cell.encryption_type = 'wep'
+	    cell.encrypted = False
+
+	return cell
+
+    @classmethod
     def where(cls, interface, fn):
         """
         Runs a filter over the output of :meth:`all` and the returns
